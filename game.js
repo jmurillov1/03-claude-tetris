@@ -13,6 +13,7 @@ const COLORS = [
   '#e57373', // Z - red
   '#90caf9', // J - azul pálido
   '#ffb74d', // L - orange
+  '#b0bec5', // N - tuerca (gris metálico)
 ];
 
 const PIECES = [
@@ -24,6 +25,7 @@ const PIECES = [
   [[5,5,0],[0,5,5],[0,0,0]],                  // Z
   [[6,0,0],[6,6,6],[0,0,0]],                  // J
   [[0,0,7],[7,7,7],[0,0,0]],                  // L
+  [[8,8,8],[8,0,8],[8,8,8]],                  // N - tuerca (3x3 con agujero)
 ];
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
@@ -45,7 +47,7 @@ const THEME_KEY = 'tetris-theme';
 const GRID_COLOR_DARK = '#22222e';
 const GRID_COLOR_LIGHT = '#d5d5e6';
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let board, holes, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
 function setTheme(theme) {
   document.body.classList.toggle('light-theme', theme === 'light');
@@ -69,8 +71,12 @@ function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
 }
 
+function createHoles() {
+  return Array.from({ length: ROWS }, () => new Array(COLS).fill(false));
+}
+
 function randomPiece() {
-  const type = Math.floor(Math.random() * 7) + 1;
+  const type = Math.floor(Math.random() * 8) + 1;
   const shape = PIECES[type].map(row => [...row]);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
 }
@@ -114,6 +120,9 @@ function merge() {
     for (let c = 0; c < current.shape[r].length; c++)
       if (current.shape[r][c])
         board[current.y + r][current.x + c] = current.shape[r][c];
+  if (current.type === 8) {
+    holes[current.y + 1][current.x + 1] = true;
+  }
 }
 
 function clearLines() {
@@ -122,6 +131,8 @@ function clearLines() {
     if (board[r].every(v => v !== 0)) {
       board.splice(r, 1);
       board.unshift(new Array(COLS).fill(0));
+      holes.splice(r, 1);
+      holes.unshift(new Array(COLS).fill(false));
       cleared++;
       r++;
     }
@@ -193,6 +204,19 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
   context.globalAlpha = 1;
 }
 
+function drawHole(context, x, y, size, alpha) {
+  const isLight = document.body.classList.contains('light-theme');
+  context.globalAlpha = alpha ?? 1;
+  context.beginPath();
+  context.arc(x * size + size / 2, y * size + size / 2, size * 0.32, 0, Math.PI * 2);
+  context.fillStyle = isLight ? '#ffffff' : '#1a1a25';
+  context.fill();
+  context.strokeStyle = COLORS[8];
+  context.lineWidth = 2;
+  context.stroke();
+  context.globalAlpha = 1;
+}
+
 function drawGrid() {
   ctx.strokeStyle = document.body.classList.contains('light-theme') ? GRID_COLOR_LIGHT : GRID_COLOR_DARK;
   ctx.lineWidth = 0.5;
@@ -216,8 +240,10 @@ function draw() {
 
   // board
   for (let r = 0; r < ROWS; r++)
-    for (let c = 0; c < COLS; c++)
+    for (let c = 0; c < COLS; c++) {
       drawBlock(ctx, c, r, board[r][c], BLOCK);
+      if (holes[r][c]) drawHole(ctx, c, r, BLOCK);
+    }
 
   // ghost
   const gy = ghostY();
@@ -225,11 +251,13 @@ function draw() {
     for (let c = 0; c < current.shape[r].length; c++)
       if (current.shape[r][c])
         drawBlock(ctx, current.x + c, gy + r, current.shape[r][c], BLOCK, 0.2);
+  if (current.type === 8) drawHole(ctx, current.x + 1, gy + 1, BLOCK, 0.2);
 
   // current piece
   for (let r = 0; r < current.shape.length; r++)
     for (let c = 0; c < current.shape[r].length; c++)
       drawBlock(ctx, current.x + c, current.y + r, current.shape[r][c], BLOCK);
+  if (current.type === 8) drawHole(ctx, current.x + 1, current.y + 1, BLOCK);
 }
 
 function drawNext() {
@@ -241,6 +269,7 @@ function drawNext() {
   for (let r = 0; r < shape.length; r++)
     for (let c = 0; c < shape[r].length; c++)
       drawBlock(nextCtx, offX + c, offY + r, shape[r][c], NB);
+  if (next.type === 8) drawHole(nextCtx, offX + 1, offY + 1, NB);
 }
 
 function endGame() {
@@ -286,6 +315,7 @@ function loop(ts) {
 
 function init() {
   board = createBoard();
+  holes = createHoles();
   score = 0;
   lines = 0;
   level = 1;
