@@ -161,6 +161,139 @@ kbd {
   background: #9bbdff;
 }
 
+/* ---- Menú de pausa ---- */
+.pause-box {
+  min-width: 220px;
+}
+
+#pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #7aa2f7;
+  margin-bottom: 4px;
+}
+
+#pause-main-view,
+#pause-controls-view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+#pause-main-view.hidden,
+#pause-controls-view.hidden {
+  display: none;
+}
+
+#pause-menu button {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+#resume-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+}
+
+#resume-btn:hover {
+  background: #9bbdff;
+}
+
+#toggle-controls-btn,
+#pause-restart-btn {
+  background: #2a2a3a;
+  color: #e0e0e0;
+}
+
+#toggle-controls-btn:hover,
+#pause-restart-btn:hover {
+  background: #3a3a52;
+}
+
+.pause-level-select {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  margin-top: 4px;
+}
+
+.pause-level-select label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #888;
+  font-weight: 600;
+}
+
+#start-level-select {
+  width: 100%;
+  background: #22223a;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  color: #e0e0e0;
+  padding: 6px 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+#pause-controls-view ul {
+  align-items: flex-start;
+}
+
+#back-btn {
+  background: #2a2a3a;
+  color: #e0e0e0;
+  margin-top: 4px;
+}
+
+#back-btn:hover {
+  background: #3a3a52;
+}
+
+body.light-theme #pause-title {
+  color: #3b5bdb;
+}
+
+body.light-theme #toggle-controls-btn,
+body.light-theme #pause-restart-btn,
+body.light-theme #back-btn {
+  background: #eaeaf5;
+  color: #1a1a25;
+}
+
+body.light-theme #toggle-controls-btn:hover,
+body.light-theme #pause-restart-btn:hover,
+body.light-theme #back-btn:hover {
+  background: #d0d0e0;
+}
+
+body.light-theme #resume-btn {
+  background: #3b5bdb;
+  color: #ffffff;
+}
+
+body.light-theme #resume-btn:hover {
+  background: #5c7cfa;
+}
+
+body.light-theme .pause-level-select label {
+  color: #8888a0;
+}
+
+body.light-theme #start-level-select {
+  background: #ffffff;
+  border: 1px solid #d0d0e0;
+  color: #1a1a25;
+}
+
 /* ---- Theme toggle switch ---- */
 .theme-toggle {
   position: relative;
