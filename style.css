@@ -160,3 +160,110 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Theme toggle switch ---- */
+.theme-toggle {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+.theme-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.theme-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #22223a;
+  border: 1px solid #3a3a5a;
+  border-radius: 22px;
+  transition: background 0.15s;
+}
+
+.theme-toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 2px;
+  bottom: 2px;
+  background: #7aa2f7;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+
+.theme-toggle input:checked + .theme-toggle-slider {
+  background: #cfd8f7;
+  border-color: #b8c4ee;
+}
+
+.theme-toggle input:checked + .theme-toggle-slider::before {
+  transform: translateX(20px);
+  background: #3b5bdb;
+}
+
+/* ---- Modo claro ---- */
+body.light-theme {
+  background: #f2f2f8;
+  color: #1a1a25;
+}
+
+body.light-theme .game-title {
+  color: #3b5bdb;
+  text-shadow: 0 0 20px rgba(59, 91, 219, 0.25);
+}
+
+body.light-theme #board {
+  border: 1px solid #d0d0da;
+  background: #ffffff;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .label {
+  color: #8888a0;
+}
+
+body.light-theme .value {
+  color: #3b5bdb;
+}
+
+body.light-theme #next-canvas {
+  border: 1px solid #d0d0da;
+  background: #ffffff;
+}
+
+body.light-theme .controls li {
+  color: #555566;
+}
+
+body.light-theme kbd {
+  background: #eaeaf5;
+  border: 1px solid #d0d0e0;
+  color: #444455;
+}
+
+body.light-theme .overlay {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+body.light-theme #overlay-title {
+  color: #c62828;
+}
+
+body.light-theme #overlay-score {
+  color: #3b5bdb;
+}
+
+body.light-theme #restart-btn {
+  background: #3b5bdb;
+  color: #ffffff;
+}
+
+body.light-theme #restart-btn:hover {
+  background: #5c7cfa;
+}
