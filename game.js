@@ -47,6 +47,27 @@ const THEME_KEY = 'tetris-theme';
 const GRID_COLOR_DARK = '#22222e';
 const GRID_COLOR_LIGHT = '#d5d5e6';
 
+// Motor de skins: cada skin define su propia paleta de colores (equivalente a COLORS),
+// un color de rejilla según tema y, opcionalmente, sus propias funciones de dibujado
+// (drawBlock/drawHole). Si una skin no define drawBlock/drawHole, se usa la
+// implementación por defecto (drawBlockDefault/drawHoleDefault) para no duplicar código.
+// Unidades futuras (ej. skins Neon/Pastel/Pixel art) solo necesitan añadir entradas
+// a este registro, sin tocar draw()/drawNext().
+const SKINS = {
+  retro: {
+    name: 'Retro',
+    colors: COLORS,
+    gridColor: (isLight) => (isLight ? GRID_COLOR_LIGHT : GRID_COLOR_DARK),
+    // sin drawBlock/drawHole propios: usa la implementación por defecto
+  },
+};
+
+let currentSkin = 'retro';
+
+function getSkin() {
+  return SKINS[currentSkin] || SKINS.retro;
+}
+
 let board, holes, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
 function setTheme(theme) {
@@ -192,9 +213,11 @@ function updateHUD() {
   levelEl.textContent = level;
 }
 
-function drawBlock(context, x, y, colorIndex, size, alpha) {
+// Implementación por defecto de bloque, compartida por las skins que no definan
+// su propia función drawBlock.
+function drawBlockDefault(context, x, y, colorIndex, size, alpha, colors) {
   if (!colorIndex) return;
-  const color = COLORS[colorIndex];
+  const color = colors[colorIndex];
   context.globalAlpha = alpha ?? 1;
   context.fillStyle = color;
   context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
@@ -204,21 +227,37 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
   context.globalAlpha = 1;
 }
 
-function drawHole(context, x, y, size, alpha) {
+// Implementación por defecto del agujero (pieza N), compartida por las skins
+// que no definan su propia función drawHole.
+function drawHoleDefault(context, x, y, size, alpha, colors) {
   const isLight = document.body.classList.contains('light-theme');
   context.globalAlpha = alpha ?? 1;
   context.beginPath();
   context.arc(x * size + size / 2, y * size + size / 2, size * 0.32, 0, Math.PI * 2);
   context.fillStyle = isLight ? '#ffffff' : '#1a1a25';
   context.fill();
-  context.strokeStyle = COLORS[8];
+  context.strokeStyle = colors[8];
   context.lineWidth = 2;
   context.stroke();
   context.globalAlpha = 1;
 }
 
+function drawBlock(context, x, y, colorIndex, size, alpha) {
+  const skin = getSkin();
+  const draw = skin.drawBlock || drawBlockDefault;
+  draw(context, x, y, colorIndex, size, alpha, skin.colors);
+}
+
+function drawHole(context, x, y, size, alpha) {
+  const skin = getSkin();
+  const draw = skin.drawHole || drawHoleDefault;
+  draw(context, x, y, size, alpha, skin.colors);
+}
+
 function drawGrid() {
-  ctx.strokeStyle = document.body.classList.contains('light-theme') ? GRID_COLOR_LIGHT : GRID_COLOR_DARK;
+  const skin = getSkin();
+  const isLight = document.body.classList.contains('light-theme');
+  ctx.strokeStyle = skin.gridColor(isLight);
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
