@@ -48,6 +48,7 @@ const GRID_COLOR_DARK = '#22222e';
 const GRID_COLOR_LIGHT = '#d5d5e6';
 
 let board, holes, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let combo, maxCombo;
 
 function setTheme(theme) {
   document.body.classList.toggle('light-theme', theme === 'light');
@@ -66,6 +67,64 @@ themeToggle.addEventListener('change', () => {
   localStorage.setItem(THEME_KEY, theme);
   setTheme(theme);
 });
+
+// ---------------------------------------------------------------------------
+// Persistencia de records y estadísticas históricas (unidad 3)
+// ---------------------------------------------------------------------------
+const RECORDS_KEY = 'tetris-records';
+const MAXLINES_KEY = 'tetris-max-lines';
+const MAX_RECORDS = 5;
+
+function loadRecords() {
+  try {
+    const raw = localStorage.getItem(RECORDS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecord(nombre, datos) {
+  const records = loadRecords();
+  records.push({
+    nombre,
+    score: datos?.score ?? 0,
+    lines: datos?.lines ?? 0,
+    combo: datos?.combo ?? 0,
+    fecha: datos?.fecha ?? new Date().toISOString(),
+  });
+  records.sort((a, b) => b.score - a.score);
+  const top = records.slice(0, MAX_RECORDS);
+  localStorage.setItem(RECORDS_KEY, JSON.stringify(top));
+  return top;
+}
+
+function resetRecords() {
+  localStorage.setItem(RECORDS_KEY, JSON.stringify([]));
+}
+
+function qualifiesForTop(score) {
+  const records = loadRecords();
+  if (records.length < MAX_RECORDS) return true;
+  const lowest = records.reduce((min, r) => Math.min(min, r.score), Infinity);
+  return score > lowest;
+}
+
+function loadMaxLines() {
+  const raw = localStorage.getItem(MAXLINES_KEY);
+  const parsed = parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function updateMaxLines(currentLines) {
+  const best = loadMaxLines();
+  if (currentLines > best) {
+    localStorage.setItem(MAXLINES_KEY, String(currentLines));
+    return currentLines;
+  }
+  return best;
+}
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -142,7 +201,13 @@ function clearLines() {
     score += (LINE_SCORES[cleared] || 0) * level;
     level = Math.floor(lines / 10) + 1;
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+    // combo: se acumula sumando las líneas limpiadas en fijados consecutivos exitosos
+    combo += cleared;
+    if (combo > maxCombo) maxCombo = combo;
+    updateMaxLines(lines);
     updateHUD();
+  } else {
+    combo = 0;
   }
 }
 
@@ -319,6 +384,8 @@ function init() {
   score = 0;
   lines = 0;
   level = 1;
+  combo = 0;
+  maxCombo = 0;
   paused = false;
   gameOver = false;
   dropInterval = 1000;
