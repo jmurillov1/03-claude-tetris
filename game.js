@@ -42,10 +42,77 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
+const startScreen = document.getElementById('start-screen');
+const playBtn = document.getElementById('play-btn');
+const resetRecordsBtn = document.getElementById('reset-records-btn');
+const recordsBody = document.getElementById('records-body');
+const maxLinesStat = document.getElementById('max-lines-stat');
 
 const THEME_KEY = 'tetris-theme';
 const GRID_COLOR_DARK = '#22222e';
 const GRID_COLOR_LIGHT = '#d5d5e6';
+
+// --- Capa mínima de persistencia de records (unidad 3) ---
+// Implementada aquí de forma mínima porque no estaba presente en este worktree.
+// Si otro worker aporta su propia versión, se resolverá en el merge.
+const RECORDS_KEY = 'tetris-records';
+const MAX_RECORDS = 5;
+
+function loadRecords() {
+  try {
+    const raw = localStorage.getItem(RECORDS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecords(records) {
+  try {
+    localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
+  } catch {
+    // almacenamiento no disponible; se ignora silenciosamente
+  }
+}
+
+function resetRecords() {
+  saveRecords([]);
+}
+
+function addRecord(finalScore, finalLines, finalLevel) {
+  const records = loadRecords();
+  records.push({ score: finalScore, lines: finalLines, level: finalLevel });
+  records.sort((a, b) => b.score - a.score);
+  saveRecords(records.slice(0, MAX_RECORDS));
+}
+
+// Líneas máximas históricas: derivadas de los records guardados (sin clave aparte)
+// para evitar duplicar almacenamiento con la unidad 3 si esta añade su propia clave.
+function getMaxLines() {
+  const records = loadRecords();
+  return records.reduce((max, r) => Math.max(max, r.lines || 0), 0);
+}
+
+// Mejor combo histórico: no hay lógica de combos en el motor de juego todavía,
+// así que este dato se completará cuando se integre la unidad 3 (o la lógica de combos).
+
+function renderRecords() {
+  const records = loadRecords();
+  recordsBody.innerHTML = '';
+  if (records.length === 0) {
+    const row = document.createElement('tr');
+    row.innerHTML = '<td colspan="4" class="no-records">Sin records todavía</td>';
+    recordsBody.appendChild(row);
+  } else {
+    records.forEach((r, i) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${i + 1}</td><td>${r.score.toLocaleString()}</td><td>${r.lines}</td><td>${r.level}</td>`;
+      recordsBody.appendChild(row);
+    });
+  }
+  maxLinesStat.textContent = `Líneas máximas: ${getMaxLines()}`;
+}
 
 let board, holes, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
@@ -276,6 +343,7 @@ function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
   animId = null;
+  addRecord(score, lines, level);
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
   overlay.classList.remove('hidden');
@@ -359,5 +427,17 @@ document.addEventListener('keydown', e => {
 
 restartBtn.addEventListener('click', init);
 
+playBtn.addEventListener('click', () => {
+  startScreen.classList.add('hidden');
+  init();
+});
+
+resetRecordsBtn.addEventListener('click', () => {
+  if (confirm('¿Seguro que quieres borrar todos los records?')) {
+    resetRecords();
+    renderRecords();
+  }
+});
+
 initTheme();
-init();
+renderRecords();

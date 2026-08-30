@@ -161,6 +161,146 @@ kbd {
   background: #9bbdff;
 }
 
+/* ---- Start screen ---- */
+.start-box {
+  max-width: 280px;
+  width: 100%;
+}
+
+#start-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: #7aa2f7;
+  text-shadow: 0 0 20px rgba(122, 162, 247, 0.5);
+}
+
+.start-subtitle {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+#records-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+}
+
+#records-table th {
+  color: #555570;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+#records-table td {
+  color: #e0e0e0;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+#records-table td.no-records {
+  color: #666;
+  font-family: system-ui, -apple-system, sans-serif;
+  padding: 10px 8px;
+}
+
+.start-stat {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #7aa2f7;
+}
+
+.start-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+#play-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#play-btn:hover {
+  background: #9bbdff;
+}
+
+#reset-records-btn {
+  background: transparent;
+  color: #e57373;
+  border: 1px solid #e57373;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s, color 0.15s;
+}
+
+#reset-records-btn:hover {
+  background: #e57373;
+  color: #0f0f17;
+}
+
+body.light-theme #start-title {
+  color: #3b5bdb;
+  text-shadow: 0 0 20px rgba(59, 91, 219, 0.25);
+}
+
+body.light-theme .start-subtitle {
+  color: #8888a0;
+}
+
+body.light-theme #records-table th {
+  color: #8888a0;
+  border-bottom: 1px solid #d0d0da;
+}
+
+body.light-theme #records-table td {
+  color: #1a1a25;
+}
+
+body.light-theme #records-table td.no-records {
+  color: #999;
+}
+
+body.light-theme .start-stat {
+  color: #3b5bdb;
+}
+
+body.light-theme #play-btn {
+  background: #3b5bdb;
+  color: #ffffff;
+}
+
+body.light-theme #play-btn:hover {
+  background: #5c7cfa;
+}
+
+body.light-theme #reset-records-btn {
+  color: #c62828;
+  border-color: #c62828;
+}
+
+body.light-theme #reset-records-btn:hover {
+  background: #c62828;
+  color: #ffffff;
+}
+
 /* ---- Theme toggle switch ---- */
 .theme-toggle {
   position: relative;
