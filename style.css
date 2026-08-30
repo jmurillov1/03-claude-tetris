@@ -161,6 +161,115 @@ kbd {
   background: #9bbdff;
 }
 
+#overlay-stats {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: #999;
+}
+
+/* ---- Nombre para el record ---- */
+.overlay-name-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.overlay-name-wrap.hidden {
+  display: none;
+}
+
+.overlay-name-input {
+  width: 120px;
+  background: #1a1a25;
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #e0e0e0;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.overlay-name-input:focus {
+  outline: none;
+  border-color: #7aa2f7;
+}
+
+#overlay-save-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#overlay-save-btn:hover {
+  background: #9bbdff;
+}
+
+/* ---- Tabla de records ---- */
+.overlay-records-wrap {
+  width: 100%;
+}
+
+.records-title {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #555570;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.records-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+}
+
+.records-table.hidden {
+  display: none;
+}
+
+.records-table td {
+  padding: 4px 8px;
+  color: #ccc;
+  text-align: left;
+}
+
+.records-table td:first-child {
+  color: #7aa2f7;
+  font-weight: 700;
+  width: 20px;
+}
+
+.records-table td:nth-child(3) {
+  text-align: right;
+}
+
+.records-table td:last-child {
+  text-align: right;
+  color: #888;
+}
+
+.records-table tr.record-new td {
+  color: #81c784;
+  font-weight: 700;
+}
+
+.no-records {
+  font-size: 12px;
+  color: #666;
+}
+
+.no-records.hidden {
+  display: none;
+}
+
 /* ---- Theme toggle switch ---- */
 .theme-toggle {
   position: relative;
@@ -266,4 +375,51 @@ body.light-theme #restart-btn {
 
 body.light-theme #restart-btn:hover {
   background: #5c7cfa;
+}
+
+body.light-theme #overlay-stats {
+  color: #666677;
+}
+
+body.light-theme .overlay-name-input {
+  background: #ffffff;
+  border: 1px solid #d0d0e0;
+  color: #1a1a25;
+}
+
+body.light-theme .overlay-name-input:focus {
+  border-color: #3b5bdb;
+}
+
+body.light-theme #overlay-save-btn {
+  background: #3b5bdb;
+  color: #ffffff;
+}
+
+body.light-theme #overlay-save-btn:hover {
+  background: #5c7cfa;
+}
+
+body.light-theme .records-title {
+  color: #8888a0;
+}
+
+body.light-theme .records-table td {
+  color: #333344;
+}
+
+body.light-theme .records-table td:first-child {
+  color: #3b5bdb;
+}
+
+body.light-theme .records-table td:last-child {
+  color: #777788;
+}
+
+body.light-theme .records-table tr.record-new td {
+  color: #2e7d32;
+}
+
+body.light-theme .no-records {
+  color: #999;
 }

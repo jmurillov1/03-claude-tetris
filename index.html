@@ -56,6 +56,21 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <p id="overlay-stats"></p>
+
+        <div id="overlay-name-wrap" class="overlay-name-wrap hidden">
+          <input type="text" id="overlay-name-input" class="overlay-name-input" maxlength="12" placeholder="Tu nombre" autocomplete="off" />
+          <button id="overlay-save-btn">Guardar</button>
+        </div>
+
+        <div class="overlay-records-wrap">
+          <p class="records-title">TOP 5</p>
+          <table id="overlay-records-table" class="records-table hidden">
+            <tbody id="overlay-records-body"></tbody>
+          </table>
+          <p id="overlay-no-records" class="no-records hidden">Aún no hay records.</p>
+        </div>
+
         <button id="restart-btn">Reiniciar</button>
       </div>
     </div>
