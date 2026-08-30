@@ -207,6 +207,23 @@ kbd {
   background: #3b5bdb;
 }
 
+/* ---- Selector de skin ---- */
+#skin-select {
+  background: #22223a;
+  color: #e0e0e0;
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#skin-select:focus {
+  outline: 2px solid #7aa2f7;
+  outline-offset: 1px;
+}
+
 /* ---- Modo claro ---- */
 body.light-theme {
   background: #f2f2f8;
@@ -245,6 +262,12 @@ body.light-theme kbd {
   background: #eaeaf5;
   border: 1px solid #d0d0e0;
   color: #444455;
+}
+
+body.light-theme #skin-select {
+  background: #ffffff;
+  color: #1a1a25;
+  border: 1px solid #d0d0da;
 }
 
 body.light-theme .overlay {
