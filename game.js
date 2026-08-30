@@ -42,12 +42,14 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
+const pauseMenu = document.getElementById('pause-menu');
+const resumeBtn = document.getElementById('resume-btn');
 
 const THEME_KEY = 'tetris-theme';
 const GRID_COLOR_DARK = '#22222e';
 const GRID_COLOR_LIGHT = '#d5d5e6';
 
-let board, holes, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let board, holes, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, menuOpen;
 
 function setTheme(theme) {
   document.body.classList.toggle('light-theme', theme === 'light');
@@ -284,14 +286,14 @@ function endGame() {
 function togglePause() {
   if (gameOver) return;
   paused = !paused;
+  menuOpen = paused;
   if (!paused) {
+    pauseMenu.classList.add('hidden');
     lastTime = performance.now();
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
+    pauseMenu.classList.remove('hidden');
   }
 }
 
@@ -320,6 +322,7 @@ function init() {
   lines = 0;
   level = 1;
   paused = false;
+  menuOpen = false;
   gameOver = false;
   dropInterval = 1000;
   dropAccum = 0;
@@ -328,13 +331,14 @@ function init() {
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  pauseMenu.classList.add('hidden');
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
-  if (paused || gameOver) return;
+  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
+  if (menuOpen || paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
       if (!collide(current.shape, current.x - 1, current.y)) current.x--;
@@ -358,6 +362,7 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+resumeBtn.addEventListener('click', togglePause);
 
 initTheme();
 init();
